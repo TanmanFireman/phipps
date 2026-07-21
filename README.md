@@ -1,11 +1,12 @@
 # Phipps
 
-Two original browser FPS adventures about one farmer, several cows, and a very bad night.
+Three browser FPS adventures about one farmer, several cows, and a very bad night.
 
 ## Games
 
 - **Harvest of the Damned** — recover three cows, cleanse the south field, and destroy the Infernal Combine.
 - **The Haygate Complex** — a larger Quake-inspired campaign with an interconnected fortress, toxic irrigation canals, a tractor key, power switch, second weapon, three secrets, 22 enemies, and the Gate Warden.
+- **The Phippsgate Complex** — an actual Quake-derived browser build: Qwasm's GPL engine, LibreQuake's open data, a new compiled BSP level, colored lighting, stock Quake AI and physics, and a Phipps player reskin.
 
 ## Play
 
@@ -21,10 +22,10 @@ Touch controls appear automatically on phones and tablets.
 - **E** — use doors, switches, and secrets
 - **1 / 2** — switch weapons
 
-The game is a dependency-free static site built with HTML, CSS, Canvas, Web Audio, and JavaScript. It can be served from any static host, including GitHub Pages.
+The first two games are dependency-free Canvas/Web Audio projects. The Phippsgate build is a static WebAssembly game and uses a scoped Service Worker to reassemble its GitHub-friendly asset chunks in the browser. All three can be served from GitHub Pages.
 
 ## Source and asset note
 
-The Haygate Complex studies the pacing and technical ideas of id Software's GPL-released Quake source, but its browser engine, level, characters, art, and game logic are original and no commercial Quake map or asset data is included. Quake is a trademark of its respective owner; this fan project is not affiliated with id Software.
+The Canvas Haygate game studies Quake's pacing but uses original browser code. The separate `quake/` build uses the GPL Quake-derived Qwasm engine and BSD-licensed LibreQuake data; its exact source revisions, licenses, and rebuild instructions are included under that directory. No commercial Quake map or PAK data is included. Quake is a trademark of its respective owner; this fan project is not affiliated with id Software.
 
 Phipps character image supplied by the project owner. “MEGALOVANIA” was composed by Toby Fox and is not claimed as original to this project.

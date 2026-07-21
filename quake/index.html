@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#090b0a">
+  <meta name="description" content="Phipps: The Phippsgate Complex — a custom browser game built on the GPL Quake engine.">
+  <title>Phipps: The Phippsgate Complex</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main id="app">
+    <section id="titleScreen" class="title-screen" aria-labelledby="gameTitle">
+      <div class="smoke smoke-one"></div>
+      <div class="smoke smoke-two"></div>
+      <div class="title-art" aria-hidden="true"></div>
+      <div class="vignette" aria-hidden="true"></div>
+
+      <div class="classification">AN ACTUAL GPL QUAKE ENGINE BUILD</div>
+      <div class="title-lockup">
+        <p class="eyebrow">FARMER. COWMAN. LAST MAN THROUGH THE HAYGATE.</p>
+        <h1 id="gameTitle"><span>PHIPPS</span><small>THE PHIPPSGATE COMPLEX</small></h1>
+        <p class="opening-line">“AH HELL.”</p>
+        <p class="mission">The cows are missing. The silo is open. Something underneath the pumpkin field has started breathing.</p>
+        <button id="startButton" class="start-button" type="button">
+          <span>BREACH THE COMPLEX</span>
+          <small>DOWNLOADS 9 MB OF OPEN GAME DATA</small>
+        </button>
+        <div class="title-actions">
+          <button id="musicButton" class="utility-button" type="button" aria-pressed="false">MUSIC: ON</button>
+          <a href="../campaign.html">PLAY THE CANVAS PROTOTYPE</a>
+          <a href="../">RETURN TO PHIPPS</a>
+        </div>
+      </div>
+
+      <aside class="intel">
+        <span>FIELD ORDER 01</span>
+        <strong>RECLAIM THE HAYGATE</strong>
+        <p>Real BSP geometry. Real Quake monsters. One heavily reskinned farmer.</p>
+      </aside>
+    </section>
+
+    <section id="loadingScreen" class="loading-screen" hidden aria-live="polite">
+      <div class="loader-mark">P</div>
+      <p id="statusLabel">WAKING THE OLD ENGINE…</p>
+      <div class="progress-track"><div id="progressBar"></div></div>
+      <p id="statusDetail">Preparing Phippsgate delivery system</p>
+    </section>
+
+    <section id="gameShell" class="game-shell" hidden>
+      <div class="game-frame">
+        <canvas id="canvas" width="1280" height="720" tabindex="0" aria-label="Phippsgate first-person game view"></canvas>
+        <textarea id="output" readonly spellcheck="false" aria-label="Quake console output"></textarea>
+        <div class="scanlines" aria-hidden="true"></div>
+
+        <aside class="phipps-hud" aria-label="Phipps status">
+          <img src="../assets/phipps.png" alt="">
+          <div><span>OPERATIVE</span><strong>PHIPPS</strong><em>“AH HELL.”</em></div>
+        </aside>
+
+        <div class="engine-stamp">QWASM // LQ // PHIPPS-01</div>
+        <button id="gameMusicButton" class="game-music" type="button">♫</button>
+      </div>
+      <p id="captureHint" class="capture-hint">CLICK THE GAME TO CAPTURE THE MOUSE · ESC TO RELEASE</p>
+    </section>
+
+    <section id="errorScreen" class="error-screen" hidden>
+      <p class="eyebrow">THE HAYGATE FAILED TO OPEN</p>
+      <h2>AH HELL.</h2>
+      <p id="errorMessage">The engine could not be started.</p>
+      <button id="retryButton" class="start-button" type="button"><span>TRY IT AGAIN</span></button>
+    </section>
+  </main>
+
+  <audio id="music" preload="auto"></audio>
+  <a id="exportFile" hidden></a>
+  <script type="module" src="main.js"></script>
+</body>
+</html>
