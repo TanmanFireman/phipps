@@ -95,11 +95,23 @@ async function ensureDelivery() {
   if (!("serviceWorker" in navigator)) {
     throw new Error("This build needs Service Worker support. Use a current desktop version of Chrome, Edge, Firefox, or Safari.");
   }
-  const registration = await navigator.serviceWorker.register("./sw.js?v=3", { scope: "./" });
-  registration.update().catch(() => {});
+  const registration = await navigator.serviceWorker.register("./sw.js?v=5", { scope: "./" });
+  await registration.update().catch(() => {});
+  const pendingWorker = registration.installing || registration.waiting;
+  if (pendingWorker && pendingWorker.state !== "activated") {
+    await new Promise((resolve, reject) => {
+      const timeout = window.setTimeout(() => reject(new Error("The updated game loader did not activate.")), 10000);
+      pendingWorker.addEventListener("statechange", () => {
+        if (pendingWorker.state === "activated") {
+          window.clearTimeout(timeout);
+          resolve();
+        }
+      });
+    });
+  }
   await navigator.serviceWorker.ready;
 
-  if (!navigator.serviceWorker.controller) {
+  if (!navigator.serviceWorker.controller || navigator.serviceWorker.controller.scriptURL !== registration.active?.scriptURL) {
     await new Promise((resolve, reject) => {
       const timeout = window.setTimeout(() => reject(new Error("The game loader did not take control. Refresh the page once and try again.")), 8000);
       navigator.serviceWorker.addEventListener("controllerchange", () => {

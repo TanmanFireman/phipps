@@ -1,4 +1,4 @@
-const CACHE_NAME = "phippsgate-runtime-v2";
+const CACHE_NAME = "phippsgate-runtime-v3";
 
 const VIRTUAL_FILES = {
   "assets/lq.bin": {
