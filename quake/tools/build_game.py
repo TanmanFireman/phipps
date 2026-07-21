@@ -326,11 +326,22 @@ def main() -> None:
 
     custom_player = reskin_player(pak0["progs/player.mdl"], pak0["gfx/palette.lmp"], args.portrait)
     autoexec = b"hostname PHIPPSGATE\nname PHIPPS\nsensitivity 5\nfov 100\ngamma 0.72\ncrosshair 1\n"
+    quake_rc = (
+        b"exec default.cfg\n"
+        b"exec config.cfg\n"
+        b"exec autoexec.cfg\n"
+        b"registered 2\n"
+        b"deathmatch 0\n"
+        b"coop 0\n"
+        b"skill 1\n"
+        b"map phipps1\n"
+    )
     files = {
         "maps/phipps1.bsp": (SOURCE / "phipps1.bsp").read_bytes(),
         "maps/phipps1.lit": (SOURCE / "phipps1.lit").read_bytes(),
         "progs/player.mdl": custom_player,
         "autoexec.cfg": autoexec,
+        "quake.rc": quake_rc,
     }
     write_pak(args.output, files)
     print(f"Built {args.output} ({args.output.stat().st_size:,} bytes)")

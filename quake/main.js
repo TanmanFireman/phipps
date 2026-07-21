@@ -122,7 +122,6 @@ function createModule() {
     canvas,
     arguments: [
       "-game", "lq1",
-      "-listen", "8",
       "-winsize", "960", "540",
       "+skill", "1",
       "+map", "phipps1",
