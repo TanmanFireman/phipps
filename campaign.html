@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#080707">
+  <meta name="description" content="Phipps: The Haygate Complex — an original Quake-inspired browser FPS campaign.">
+  <title>Phipps // The Haygate Complex</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="campaign.css">
+</head>
+<body class="campaign-page">
+  <main id="app">
+    <section id="title-screen" class="screen active" aria-labelledby="campaign-title">
+      <div class="campaign-art" aria-hidden="true"></div>
+      <div class="title-vignette" aria-hidden="true"></div>
+      <div class="title-content campaign-title-copy">
+        <p class="eyebrow">PHIPPS // EPISODE ONE</p>
+        <h1 id="campaign-title"><span>HAYGATE</span><small>THE COMPLEX BENEATH THE FARM</small></h1>
+        <p class="tagline">THE GATE OPENED AT 3:17.<br>PHIPPS CLOCKED IN AT 3:18.</p>
+        <div class="title-actions">
+          <button id="start-button" class="blood-button">DESCEND INTO THE COMPLEX</button>
+          <button id="briefing-button" class="ghost-button">FIELD DOSSIER</button>
+          <a href="index.html" class="ghost-button title-link">RETURN TO THE FARM</a>
+        </div>
+      </div>
+      <div class="episode-stamp"><b>E1</b><span>THE<br>HAYGATE<br>COMPLEX</span></div>
+      <p class="boot-note">A LARGE ORIGINAL CAMPAIGN · 3 SECRETS · TRACTOR KEY · FENCEPOST DRIVER · HEADPHONES RECOMMENDED</p>
+    </section>
+
+    <section id="game-screen" class="screen" aria-label="The Haygate Complex game">
+      <div id="game-shell">
+        <canvas id="game" width="960" height="540" tabindex="0" aria-label="First-person campaign view"></canvas>
+        <div class="scanlines" aria-hidden="true"></div>
+        <div id="damage-flash" aria-hidden="true"></div>
+        <div id="water-tint" aria-hidden="true"></div>
+        <div id="crosshair" aria-hidden="true"><i></i><i></i></div>
+        <div id="boss-bar" class="hidden"><span>THE GATE WARDEN</span><div><i id="boss-health"></i></div></div>
+        <div id="dialogue" class="hidden" aria-live="polite"><strong>PHIPPS</strong><span id="dialogue-text"></span></div>
+        <div id="use-prompt" class="hidden" aria-live="polite">E · USE</div>
+        <div id="objective">ENTER THE HAYGATE COMPLEX</div>
+        <div id="campaign-hud" aria-label="Campaign status">
+          <div class="campaign-vitals"><img src="assets/phipps.png" alt="Phipps"><div><span>VITALITY</span><strong id="health">100</strong><i><b id="health-bar"></b></i></div></div>
+          <div class="campaign-weapon"><span id="weapon-name">DOUBLE BARREL</span><strong id="ammo">16</strong><small id="ammo-name">SHELLS</small></div>
+          <div class="campaign-inventory">
+            <div id="key-indicator"><span>TRACTOR KEY</span><strong>—</strong></div>
+            <div><span>CLEANSED</span><strong id="kills">0 / 22</strong></div>
+            <div><span>SECRETS</span><strong id="secrets">0 / 3</strong></div>
+          </div>
+        </div>
+        <div id="weapon-switch"><span>1 · BOOMSTICK</span><span>2 · POST DRIVER</span></div>
+        <button id="sound-toggle" aria-label="Mute sound">SOUND: ON</button>
+        <button id="pause-button" aria-label="Pause game">II</button>
+      </div>
+      <div id="touch-controls" aria-label="Touch controls">
+        <div class="touch-pad"><button data-control="forward" aria-label="Move forward">▲</button><div><button data-control="left" aria-label="Turn left">◀</button><button data-control="back" aria-label="Move backward">▼</button><button data-control="right" aria-label="Turn right">▶</button></div></div>
+        <div class="touch-actions"><button id="touch-use" aria-label="Use or open">USE</button><button id="touch-switch" aria-label="Switch weapon">SWAP</button><button id="touch-fire" aria-label="Fire weapon">FIRE</button></div>
+      </div>
+      <p class="controls-copy"><b>WASD</b> MOVE · <b>MOUSE</b> AIM · <b>CLICK</b> FIRE · <b>E</b> USE · <b>1 / 2</b> WEAPONS · <b>ESC</b> PAUSE</p>
+    </section>
+
+    <div id="briefing" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="briefing-title">
+      <div class="modal-panel dossier campaign-dossier">
+        <button class="modal-close" aria-label="Close dossier">×</button>
+        <p class="eyebrow">PHIPPS AGRICULTURAL INCIDENT COMMAND</p>
+        <h2 id="briefing-title">THE HAYGATE COMPLEX</h2>
+        <div class="briefing-grid">
+          <img src="assets/phipps.png" alt="Phipps">
+          <div>
+            <p>A prehuman machine has awakened beneath the milking shed. It is pumping something red through the irrigation system, and Cow Seven has gone through the gate.</p>
+            <ul>
+              <li>Cross the condemned processing wing.</li>
+              <li>Recover the brass tractor key.</li>
+              <li>Restart the freight elevator.</li>
+              <li>Kill the Gate Warden and close the Haygate.</li>
+            </ul>
+            <blockquote>“I’m like you. I also dislike unauthorized excavation.”</blockquote>
+          </div>
+        </div>
+        <button id="briefing-start" class="blood-button">AH HELL. OPEN THE HATCH.</button>
+      </div>
+    </div>
+
+    <div id="pause-overlay" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="pause-title">
+      <div class="modal-panel compact"><p class="eyebrow">SHIFT INTERRUPTED</p><h2 id="pause-title">PAUSED</h2><button id="resume-button" class="blood-button">CONTINUE DESCENT</button><button id="restart-button" class="ghost-button">RESTART COMPLEX</button><a class="ghost-button pause-link" href="index.html">RETURN TO FARM</a></div>
+    </div>
+
+    <div id="end-screen" class="screen" aria-live="assertive">
+      <div class="campaign-art end-art"></div>
+      <div class="end-copy"><p class="eyebrow" id="end-eyebrow">E1 COMPLETE</p><h2 id="end-title">THE HAYGATE IS SILENT</h2><p id="end-text"></p><div id="end-stats"></div><button id="end-restart" class="blood-button">RUN THE COMPLEX AGAIN</button><a href="index.html" class="ghost-button title-link">RETURN TO THE FARM</a></div>
+    </div>
+  </main>
+  <script src="campaign.js"></script>
+</body>
+</html>

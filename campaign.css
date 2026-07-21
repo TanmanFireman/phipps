@@ -1,0 +1,102 @@
+.campaign-page { background: #020303; }
+
+.campaign-page .campaign-art {
+  position: absolute;
+  inset: -3%;
+  z-index: -3;
+  background: #070808 url("assets/haygate-key-art.webp") center 44% / cover no-repeat;
+  filter: saturate(.68) contrast(1.2) brightness(.68);
+  animation: title-breathe 16s ease-in-out infinite alternate;
+}
+
+.campaign-page .title-vignette {
+  background:
+    radial-gradient(circle at 62% 42%, transparent 5%, rgba(0,0,0,.22) 45%, #000 105%),
+    linear-gradient(90deg, rgba(0,0,0,.93) 0%, rgba(0,0,0,.5) 46%, transparent 80%);
+}
+
+.campaign-title-copy { align-self: center; }
+.campaign-title-copy h1 > span { font-size: clamp(5.2rem, 14vw, 12rem); color: #d9d0bf; text-shadow: 0 .045em 0 #384142, 0 .085em 0 #101414, 0 .14em .2em #000; }
+.campaign-title-copy h1 small { color: #bd5424; font-size: clamp(1.25rem,3.4vw,3rem); }
+.title-link { display: inline-flex; align-items: center; justify-content: center; text-decoration: none; }
+
+.episode-stamp {
+  position: absolute;
+  right: 4vw;
+  bottom: 5vh;
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  padding: .55rem .7rem;
+  border: 3px solid #cda776;
+  color: #dac09a;
+  background: rgba(0,0,0,.76);
+  transform: rotate(-2deg);
+}
+.episode-stamp b { font: 3.4rem/1 Impact,sans-serif; color: #d45927; }
+.episode-stamp span { font-size:.62rem;font-weight:950;line-height:1.25;letter-spacing:.12em; }
+
+#water-tint { position:absolute;inset:0;pointer-events:none;background:rgba(80,105,71,0);box-shadow:inset 0 0 100px rgba(65,112,77,0);transition:background .25s; }
+#water-tint.active { background:rgba(45,91,69,.15);box-shadow:inset 0 0 120px rgba(45,118,79,.4); }
+
+#use-prompt {
+  position:absolute;
+  left:50%;bottom:24%;
+  transform:translateX(-50%);
+  padding:.45rem .75rem;
+  border:1px solid #c69452;
+  color:#ffe0a4;
+  background:rgba(0,0,0,.78);
+  font-size:clamp(.56rem,1.2vw,.78rem);
+  font-weight:900;
+  letter-spacing:.16em;
+}
+
+#campaign-hud {
+  position:absolute;
+  left:0;right:0;bottom:0;
+  height:16%;
+  display:grid;
+  grid-template-columns:1.05fr .55fr 1.4fr;
+  border-top:3px solid #6d311b;
+  color:#e9decc;
+  background:linear-gradient(180deg,rgba(17,16,14,.94),rgba(2,3,3,.99));
+  box-shadow:0 -12px 36px rgba(0,0,0,.6);
+}
+
+.campaign-vitals { display:flex;min-width:0; }
+.campaign-vitals img { width:29%;object-fit:contain;object-position:bottom;background:radial-gradient(circle,#443125,#0b0b0a);filter:sepia(.2) contrast(1.1); }
+.campaign-vitals > div { flex:1;display:grid;align-content:center;padding:0 7%; }
+.campaign-vitals span,.campaign-weapon span,.campaign-weapon small,.campaign-inventory span { color:#a99b87;font-size:clamp(.42rem,.8vw,.65rem);font-weight:900;letter-spacing:.16em; }
+.campaign-vitals strong,.campaign-weapon strong { font:clamp(1.8rem,3.8vw,3.1rem)/.88 Impact,sans-serif; }
+.campaign-vitals i { display:block;height:7px;margin-top:5px;background:#24100b; }
+#health-bar { display:block;width:100%;height:100%;background:linear-gradient(90deg,#a31d11,#e26a28);transition:width .2s; }
+.campaign-weapon { display:grid;align-content:center;text-align:center;border-inline:1px solid #3c2d24; }
+.campaign-weapon strong { color:#e69b42; }
+.campaign-inventory { display:grid;grid-template-columns:1.15fr 1fr 1fr;align-items:center;text-align:center; }
+.campaign-inventory > div+div { border-left:1px solid #3c2d24; }
+.campaign-inventory span { display:block; }
+.campaign-inventory strong { display:block;margin-top:4px;font:clamp(1rem,2vw,1.65rem) Impact,sans-serif; }
+#key-indicator.owned strong { color:#f1bd4d;text-shadow:0 0 10px #b96616; }
+
+#weapon-switch { position:absolute;left:2%;bottom:18%;display:flex;gap:.35rem;color:#7e7569;font-size:clamp(.42rem,.8vw,.58rem);font-weight:900;letter-spacing:.08em; }
+#weapon-switch span { padding:.28rem .4rem;background:rgba(0,0,0,.55); }
+#weapon-switch span.active { color:#ffc067;border-bottom:2px solid #c85420; }
+
+.campaign-dossier h2 { font-size:clamp(2.4rem,7vw,5.3rem); }
+.campaign-page .pause-link { display:flex;width:100%;margin-top:.7rem;justify-content:center;align-items:center; }
+.campaign-page #end-screen .campaign-art { filter:grayscale(.4) sepia(.4) brightness(.3) contrast(1.25); }
+
+.touch-actions { display:flex;align-items:center;gap:.4rem; }
+#touch-use,#touch-switch { width:55px !important;height:55px !important;border-radius:50%; }
+
+@media(max-width:780px){
+  .campaign-title-copy { align-self:end;padding-bottom:15vh; }
+  .campaign-title-copy h1>span { font-size:clamp(4rem,21vw,7.5rem); }
+  .episode-stamp,.campaign-page .boot-note { display:none; }
+  #campaign-hud { grid-template-columns:1fr .65fr 1.4fr;height:18%; }
+  .campaign-vitals img { display:none; }
+  .campaign-inventory span { font-size:.36rem;letter-spacing:.05em; }
+  .campaign-inventory strong { font-size:.84rem; }
+  #weapon-switch { display:none; }
+}

@@ -119,9 +119,9 @@ h1 small {
   letter-spacing: .09em;
 }
 
-.title-actions { display: flex; gap: .8rem; margin-left: .4rem; }
+.title-actions { display: flex; flex-wrap: wrap; gap: .8rem; margin-left: .4rem; }
 
-.blood-button, .ghost-button {
+.blood-button, .ghost-button, .campaign-button {
   min-height: 52px;
   padding: .85rem 1.4rem;
   border: 2px solid var(--blood);
@@ -131,15 +131,18 @@ h1 small {
   letter-spacing: .1em;
   text-transform: uppercase;
   cursor: pointer;
+  text-decoration: none;
   box-shadow: 0 6px 0 #3d0a05, 0 11px 24px rgba(0,0,0,.55);
   transition: transform .12s, filter .12s, background .12s;
 }
 
 .blood-button { background: linear-gradient(#d53720, #7f160c); }
 .ghost-button { background: rgba(8,5,4,.74); border-color: #9d8063; }
-.blood-button:hover, .ghost-button:hover { filter: brightness(1.22); transform: translateY(-2px); }
-.blood-button:active, .ghost-button:active { transform: translateY(4px); box-shadow: 0 2px 0 #3d0a05; }
-.blood-button:focus-visible, .ghost-button:focus-visible, button:focus-visible { outline: 3px solid #ffd27e; outline-offset: 4px; }
+.campaign-button { display: inline-flex; flex-direction: column; justify-content: center; border-color: #d69235; background: linear-gradient(135deg, #4b1c0d, #17100c); }
+.campaign-button small { margin-top: .2rem; color: #e9a640; font-size: .52rem; letter-spacing: .13em; }
+.blood-button:hover, .ghost-button:hover, .campaign-button:hover { filter: brightness(1.22); transform: translateY(-2px); }
+.blood-button:active, .ghost-button:active, .campaign-button:active { transform: translateY(4px); box-shadow: 0 2px 0 #3d0a05; }
+.blood-button:focus-visible, .ghost-button:focus-visible, .campaign-button:focus-visible, button:focus-visible { outline: 3px solid #ffd27e; outline-offset: 4px; }
 
 .rating-stamp {
   position: absolute;
