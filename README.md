@@ -1,15 +1,20 @@
-# Phipps: Bad Time Simulator
+# Phipps: Harvest of the Damned
 
-An unofficial photo-mode reskin of Jcw87's Bad Time Simulator. Sans is replaced by Phipps, and his opening line is "ahh hell".
+An original browser FPS about one farmer, three cows, and a very bad night.
 
 ## Play
 
-Open the GitHub Pages URL for this repository. Desktop and mobile touch controls are supported by the original Construct 2 game.
+- **WASD** — move
+- **Mouse / arrow keys** — aim
+- **Click / Space** — fire
+- **Escape** — pause
 
-## Credits
+Touch controls appear automatically on phones and tablets.
 
-- Original Bad Time Simulator engine and export: [Jcw87/c2-sans-fight](https://github.com/Jcw87/c2-sans-fight)
-- Undertale and its original characters: Toby Fox
-- Phipps photo supplied for this reskin
+## Mission
 
-This is a noncommercial fan project.
+Recover all three cows, cleanse ten field abominations, destroy the Infernal Combine, and reach the hellgate.
+
+The game is a dependency-free static site built with HTML, CSS, Canvas, Web Audio, and JavaScript. It can be served from any static host, including GitHub Pages.
+
+Phipps character image supplied by the project owner. “MEGALOVANIA” was composed by Toby Fox and is not claimed as original to this project.
