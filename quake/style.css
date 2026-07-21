@@ -44,7 +44,7 @@ button { color: inherit; }
   z-index: -4;
   background:
     linear-gradient(90deg, rgba(4, 5, 5, .97) 0%, rgba(4, 5, 5, .78) 35%, rgba(4, 5, 5, .12) 72%),
-    url("../assets/haygate-key-art.webp") 68% 35% / cover no-repeat;
+    url("../assets/title-key-art.webp") 68% 35% / cover no-repeat;
   filter: saturate(.75) contrast(1.22) brightness(.76);
   transform: scale(1.02);
   animation: awaken 8s ease-out both;
