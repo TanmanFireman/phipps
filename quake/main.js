@@ -95,7 +95,7 @@ async function ensureDelivery() {
   if (!("serviceWorker" in navigator)) {
     throw new Error("This build needs Service Worker support. Use a current desktop version of Chrome, Edge, Firefox, or Safari.");
   }
-  const registration = await navigator.serviceWorker.register("./sw.js?v=5", { scope: "./" });
+  const registration = await navigator.serviceWorker.register("./sw.js?v=6", { scope: "./" });
   await registration.update().catch(() => {});
   const pendingWorker = registration.installing || registration.waiting;
   if (pendingWorker && pendingWorker.state !== "activated") {
