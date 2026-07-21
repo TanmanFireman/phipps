@@ -95,7 +95,7 @@ async function ensureDelivery() {
   if (!("serviceWorker" in navigator)) {
     throw new Error("This build needs Service Worker support. Use a current desktop version of Chrome, Edge, Firefox, or Safari.");
   }
-  const registration = await navigator.serviceWorker.register("./sw.js", { scope: "./" });
+  const registration = await navigator.serviceWorker.register("./sw.js?v=3", { scope: "./" });
   registration.update().catch(() => {});
   await navigator.serviceWorker.ready;
 
@@ -123,7 +123,7 @@ function createModule() {
     arguments: [
       "-game", "lq1",
       "-listen", "8",
-      "-winsize", "1280", "720",
+      "-winsize", "960", "540",
       "+skill", "1",
       "+map", "phipps1",
       "+fov", "100",
@@ -197,7 +197,7 @@ function createModule() {
 function loadEngineScript() {
   return new Promise((resolve, reject) => {
     const script = document.createElement("script");
-    script.src = "runtime/qwasm-gl.js";
+    script.src = "runtime/qwasm-sw.js";
     script.async = true;
     script.onload = resolve;
     script.onerror = () => reject(new Error("The compiled Quake engine could not be loaded."));

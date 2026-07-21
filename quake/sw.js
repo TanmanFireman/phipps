@@ -1,4 +1,4 @@
-const CACHE_NAME = "phippsgate-runtime-v1";
+const CACHE_NAME = "phippsgate-runtime-v2";
 
 const VIRTUAL_FILES = {
   "assets/lq.bin": {
@@ -14,6 +14,10 @@ const VIRTUAL_FILES = {
       "runtime/qwasm-gl.wasm.part00", "runtime/qwasm-gl.wasm.part01",
       "runtime/qwasm-gl.wasm.part02",
     ],
+  },
+  "runtime/qwasm-sw.wasm": {
+    type: "application/wasm",
+    parts: ["runtime/qwasm-sw.wasm.part00", "runtime/qwasm-sw.wasm.part01"],
   },
   "runtime/libarchive.wasm": {
     type: "application/wasm",
