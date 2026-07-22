@@ -150,10 +150,10 @@ def build_map(path: Path) -> None:
             entity("weapon_rocketlauncher", (560, 0, 40)),
             entity("item_armor1", (-505, 160, 24)),
             entity("item_armor2", (500, 255, 24)),
-            entity("ammo_shells", (-575, -155, 24)),
-            entity("ammo_shells", (-95, 235, 24)),
-            entity("ammo_nails", (130, -245, 24)),
-            entity("ammo_rockets", (770, 170, 24)),
+            entity("item_shells", (-575, -155, 24)),
+            entity("item_shells", (-95, 235, 24)),
+            entity("item_spikes", (130, -245, 24)),
+            entity("item_rockets", (770, 170, 24)),
             entity("item_health", (-480, 0, 24)),
             entity("item_health", (245, 225, 24)),
             entity("item_health", (790, -20, 24), spawnflags="2"),
@@ -286,6 +286,97 @@ def reskin_player(model: bytes, palette_bytes: bytes, portrait_path: Path) -> by
     return model[:88] + indexed + model[88 + width * height :]
 
 
+def make_mimic_model(
+    palette_bytes: bytes,
+    portrait_path: Path,
+    dimensions: tuple[int, int, int],
+    frame_count: int = 200,
+) -> bytes:
+    """Create a compact Quake alias model without using commercial model data.
+
+    The stock LibreQuake QuakeC still contains the original monster behavior,
+    but its small browser pack intentionally has no monster meshes. These
+    six-sided Phipps heads provide enough identically indexed frames for every
+    behavior animation while keeping the add-on genuinely redistributable.
+    """
+    width, depth, height = dimensions
+    skin_width = skin_height = 64
+
+    portrait = Image.open(portrait_path).convert("RGBA")
+    source_width, source_height = portrait.size
+    portrait = portrait.crop((
+        int(source_width * 0.19),
+        int(source_height * 0.07),
+        int(source_width * 0.57),
+        int(source_height * 0.40),
+    ))
+    portrait = ImageOps.fit(portrait, (skin_width, skin_height), Image.Resampling.LANCZOS, centering=(0.5, 0.45))
+    portrait = ImageEnhance.Contrast(portrait).enhance(1.28)
+    skin = Image.new("RGB", (skin_width, skin_height), (18, 8, 5))
+    skin.paste(portrait.convert("RGB"), (0, 0), portrait.getchannel("A"))
+    skin_bytes = nearest_palette(skin, palette_bytes)
+
+    # Twenty-four vertices let every cuboid face map the complete Phipps skin.
+    faces = [
+        [(255, 0, 0), (255, 255, 0), (255, 255, 255), (255, 0, 255)],
+        [(0, 255, 0), (0, 0, 0), (0, 0, 255), (0, 255, 255)],
+        [(0, 0, 0), (255, 0, 0), (255, 0, 255), (0, 0, 255)],
+        [(255, 255, 0), (0, 255, 0), (0, 255, 255), (255, 255, 255)],
+        [(0, 0, 255), (255, 0, 255), (255, 255, 255), (0, 255, 255)],
+        [(0, 255, 0), (255, 255, 0), (255, 0, 0), (0, 0, 0)],
+    ]
+    vertices = [vertex for face in faces for vertex in face]
+    triangles = []
+    for face_index in range(6):
+        base = face_index * 4
+        triangles.extend([(base, base + 1, base + 2), (base, base + 2, base + 3)])
+
+    radius = math.sqrt((width / 2) ** 2 + (depth / 2) ** 2 + height**2)
+    header = struct.pack(
+        "<2i3f3ff3f8if",
+        1330660425,
+        6,
+        width / 255,
+        depth / 255,
+        height / 255,
+        -width / 2,
+        -depth / 2,
+        0.0,
+        radius,
+        0.0,
+        0.0,
+        height * 0.72,
+        1,
+        skin_width,
+        skin_height,
+        len(vertices),
+        len(triangles),
+        frame_count,
+        0,
+        0,
+        1.0,
+    )
+
+    payload = bytearray(header)
+    payload.extend(struct.pack("<i", 0))
+    payload.extend(skin_bytes)
+    uv = [(0, 0), (63, 0), (63, 63), (0, 63)]
+    for vertex_index in range(len(vertices)):
+        s, t = uv[vertex_index % 4]
+        payload.extend(struct.pack("<iii", 0, s, t))
+    for a, b, c in triangles:
+        payload.extend(struct.pack("<iiii", 1, a, b, c))
+    for frame_index in range(frame_count):
+        payload.extend(struct.pack("<i", 0))
+        payload.extend(struct.pack("<4B", 0, 0, 0, 0))
+        payload.extend(struct.pack("<4B", 255, 255, 255, 0))
+        name = f"mimic{frame_index:03d}".encode("ascii")
+        payload.extend(name.ljust(16, b"\0"))
+        for x, y, z in vertices:
+            payload.extend(struct.pack("<4B", x, y, z, 0))
+    return bytes(payload)
+
+
 def run_checked(command: list[str], cwd: Path, env: dict[str, str]) -> None:
     print("+", " ".join(command))
     subprocess.run(command, cwd=cwd, env=env, check=True)
@@ -343,6 +434,21 @@ def main() -> None:
         "autoexec.cfg": autoexec,
         "quake.rc": quake_rc,
     }
+    monster_models = {
+        "soldier.mdl": (44, 44, 64),
+        "enforcer.mdl": (48, 48, 68),
+        "dog.mdl": (44, 44, 36),
+        "knight.mdl": (48, 48, 70),
+        "ogre.mdl": (60, 60, 76),
+        "demon.mdl": (64, 64, 80),
+        "shambler.mdl": (82, 82, 118),
+    }
+    head_names = ["h_guard.mdl", "h_mega.mdl", "h_dog.mdl", "h_knight.mdl", "h_ogre.mdl", "h_demon.mdl", "h_shams.mdl"]
+    for model_name, dimensions in monster_models.items():
+        files[f"progs/{model_name}"] = make_mimic_model(pak0["gfx/palette.lmp"], args.portrait, dimensions)
+    mimic_head = make_mimic_model(pak0["gfx/palette.lmp"], args.portrait, (30, 30, 30))
+    for model_name in head_names:
+        files[f"progs/{model_name}"] = mimic_head
     write_pak(args.output, files)
     print(f"Built {args.output} ({args.output.stat().st_size:,} bytes)")
 
