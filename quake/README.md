@@ -4,7 +4,7 @@ This directory is a real Quake-engine browser build, not a canvas imitation. It 
 
 - the GPL-licensed Qwasm WebAssembly port of the Quake engine;
 - LibreQuake's freely redistributable Quake-compatible game data;
-- a new compiled BSP map, colored lighting, scripted encounters, a Phipps player skin, and original low-poly Phippsgate Mimic models used by the stock monster AI;
+- a new compiled BSP map, colored lighting, scripted encounters, a Phipps player skin, and original low-poly pumpkin demons with generated growls driven by the stock monster AI;
 - the Phipps project's original browser music and presentation layer.
 
 The shipped level is `source/phipps1.map`. It compiles to a standard version-29 Quake BSP and is loaded from `pak6.pak` after LibreQuake's open packs.

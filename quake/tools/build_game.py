@@ -12,6 +12,7 @@ import argparse
 import math
 import os
 from pathlib import Path
+import random
 import struct
 import subprocess
 from typing import Iterable
@@ -21,6 +22,24 @@ from PIL import Image, ImageDraw, ImageEnhance, ImageOps
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "source"
+
+MONSTER_SOUNDS = (
+    "demon/ddeath.wav", "demon/dhit2.wav", "demon/djump.wav", "demon/dpain1.wav",
+    "demon/idle1.wav", "demon/sight2.wav", "dog/dattack1.wav", "dog/ddeath.wav",
+    "dog/dpain1.wav", "dog/dsight.wav", "dog/idle.wav", "enforcer/death1.wav",
+    "enforcer/enfire.wav", "enforcer/enfstop.wav", "enforcer/idle1.wav",
+    "enforcer/pain1.wav", "enforcer/pain2.wav", "enforcer/sight1.wav",
+    "enforcer/sight2.wav", "enforcer/sight3.wav", "enforcer/sight4.wav",
+    "knight/idle.wav", "knight/kdeath.wav", "knight/khurt.wav", "knight/ksight.wav",
+    "knight/sword1.wav", "knight/sword2.wav", "ogre/ogdrag.wav", "ogre/ogdth.wav",
+    "ogre/ogidle.wav", "ogre/ogidle2.wav", "ogre/ogpain1.wav", "ogre/ogsawatk.wav",
+    "ogre/ogwake.wav", "shambler/melee1.wav", "shambler/melee2.wav",
+    "shambler/sattck1.wav", "shambler/sboom.wav", "shambler/sdeath.wav",
+    "shambler/shurt2.wav", "shambler/sidle.wav", "shambler/smack.wav",
+    "shambler/ssight.wav", "soldier/death1.wav", "soldier/idle.wav",
+    "soldier/pain1.wav", "soldier/pain2.wav", "soldier/sattck1.wav",
+    "soldier/sight1.wav",
+)
 
 
 def read_pak(path: Path) -> dict[str, bytes]:
@@ -379,6 +398,42 @@ def make_mimic_model(
     return bytes(payload)
 
 
+def make_monster_sound(name: str) -> bytes:
+    """Synthesize a short, redistributable 8-bit monster growl for Quake."""
+    sample_rate = 11025
+    lowered = name.lower()
+    if "death" in lowered or "dth" in lowered:
+        duration = 0.62
+    elif any(word in lowered for word in ("sight", "wake", "idle")):
+        duration = 0.44
+    elif any(word in lowered for word in ("attack", "fire", "sword", "smack", "boom")):
+        duration = 0.24
+    else:
+        duration = 0.32
+
+    rng = random.Random(f"phippsgate:{name}")
+    base = 47 + rng.random() * 68
+    sample_count = int(sample_rate * duration)
+    samples = bytearray()
+    phase = 0.0
+    for index in range(sample_count):
+        progress = index / sample_count
+        envelope = (1.0 - progress) ** (0.55 if "idle" in lowered else 0.85)
+        frequency = base * (1.35 - progress * (0.72 if "death" in lowered else 0.38))
+        phase += 2 * math.pi * frequency / sample_rate
+        rumble = math.sin(phase) + 0.42 * math.sin(phase * 0.51)
+        grit = rng.uniform(-1.0, 1.0)
+        pulse = math.sin(phase * 0.13) > -0.32
+        value = (0.58 * rumble + 0.42 * grit) * envelope * (1.0 if pulse else 0.45)
+        samples.append(max(0, min(255, 128 + int(value * 52))))
+
+    return (
+        b"RIFF" + struct.pack("<I", 36 + len(samples)) + b"WAVE"
+        + b"fmt " + struct.pack("<IHHIIHH", 16, 1, 1, sample_rate, sample_rate, 1, 8)
+        + b"data" + struct.pack("<I", len(samples)) + bytes(samples)
+    )
+
+
 def run_checked(command: list[str], cwd: Path, env: dict[str, str]) -> None:
     print("+", " ".join(command))
     subprocess.run(command, cwd=cwd, env=env, check=True)
@@ -451,6 +506,8 @@ def main() -> None:
     mimic_head = make_mimic_model(pak0["gfx/palette.lmp"], (16, 16, 16))
     for model_name in head_names:
         files[f"progs/{model_name}"] = mimic_head
+    for sound_name in MONSTER_SOUNDS:
+        files[f"sound/{sound_name}"] = make_monster_sound(sound_name)
     write_pak(args.output, files)
     print(f"Built {args.output} ({args.output.stat().st_size:,} bytes)")
 
