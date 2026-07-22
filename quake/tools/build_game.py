@@ -16,7 +16,7 @@ import struct
 import subprocess
 from typing import Iterable
 
-from PIL import Image, ImageEnhance, ImageOps
+from PIL import Image, ImageDraw, ImageEnhance, ImageOps
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -288,7 +288,6 @@ def reskin_player(model: bytes, palette_bytes: bytes, portrait_path: Path) -> by
 
 def make_mimic_model(
     palette_bytes: bytes,
-    portrait_path: Path,
     dimensions: tuple[int, int, int],
     frame_count: int = 200,
 ) -> bytes:
@@ -296,27 +295,30 @@ def make_mimic_model(
 
     The stock LibreQuake QuakeC still contains the original monster behavior,
     but its small browser pack intentionally has no monster meshes. These
-    six-sided Phipps heads provide enough identically indexed frames for every
+    low-poly pumpkin demons provide enough identically indexed frames for every
     behavior animation while keeping the add-on genuinely redistributable.
     """
     width, depth, height = dimensions
     skin_width = skin_height = 64
 
-    portrait = Image.open(portrait_path).convert("RGBA")
-    source_width, source_height = portrait.size
-    portrait = portrait.crop((
-        int(source_width * 0.19),
-        int(source_height * 0.07),
-        int(source_width * 0.57),
-        int(source_height * 0.40),
-    ))
-    portrait = ImageOps.fit(portrait, (skin_width, skin_height), Image.Resampling.LANCZOS, centering=(0.5, 0.45))
-    portrait = ImageEnhance.Contrast(portrait).enhance(1.28)
-    skin = Image.new("RGB", (skin_width, skin_height), (18, 8, 5))
-    skin.paste(portrait.convert("RGB"), (0, 0), portrait.getchannel("A"))
+    # A hand-drawn indexed skin gives the monsters their own visual identity.
+    # Keeping it mostly black and rust-orange lets the shapes sit in the level's
+    # lighting instead of turning into bright billboards at close range.
+    skin = Image.new("RGB", (skin_width, skin_height), (8, 10, 9))
+    draw = ImageDraw.Draw(skin)
+    draw.ellipse((5, 7, 58, 59), fill=(111, 36, 8), outline=(39, 15, 4), width=3)
+    draw.ellipse((10, 10, 53, 55), fill=(151, 53, 9), outline=(196, 78, 12), width=2)
+    draw.line((22, 10, 19, 55), fill=(79, 26, 7), width=3)
+    draw.line((42, 10, 45, 55), fill=(79, 26, 7), width=3)
+    draw.polygon(((14, 25), (27, 20), (23, 34)), fill=(5, 5, 4))
+    draw.polygon(((50, 25), (37, 20), (41, 34)), fill=(5, 5, 4))
+    draw.polygon(((13, 41), (20, 38), (26, 44), (32, 39), (39, 45), (46, 39), (52, 44),
+                  (48, 52), (40, 49), (34, 54), (27, 49), (20, 52)), fill=(5, 5, 4))
+    draw.rectangle((27, 1, 37, 10), fill=(29, 42, 23))
+    draw.line((32, 7, 40, 0), fill=(57, 67, 32), width=3)
     skin_bytes = nearest_palette(skin, palette_bytes)
 
-    # Twenty-four vertices let every cuboid face map the complete Phipps skin.
+    # Twenty-four vertices let every cuboid face map the complete demon skin.
     faces = [
         [(255, 0, 0), (255, 255, 0), (255, 255, 255), (255, 0, 255)],
         [(0, 255, 0), (0, 0, 0), (0, 0, 255), (0, 255, 255)],
@@ -435,18 +437,18 @@ def main() -> None:
         "quake.rc": quake_rc,
     }
     monster_models = {
-        "soldier.mdl": (44, 44, 64),
-        "enforcer.mdl": (48, 48, 68),
-        "dog.mdl": (44, 44, 36),
-        "knight.mdl": (48, 48, 70),
-        "ogre.mdl": (60, 60, 76),
-        "demon.mdl": (64, 64, 80),
-        "shambler.mdl": (82, 82, 118),
+        "soldier.mdl": (24, 24, 36),
+        "enforcer.mdl": (26, 26, 40),
+        "dog.mdl": (20, 20, 18),
+        "knight.mdl": (26, 26, 42),
+        "ogre.mdl": (32, 32, 42),
+        "demon.mdl": (34, 34, 44),
+        "shambler.mdl": (42, 42, 60),
     }
     head_names = ["h_guard.mdl", "h_mega.mdl", "h_dog.mdl", "h_knight.mdl", "h_ogre.mdl", "h_demon.mdl", "h_shams.mdl"]
     for model_name, dimensions in monster_models.items():
-        files[f"progs/{model_name}"] = make_mimic_model(pak0["gfx/palette.lmp"], args.portrait, dimensions)
-    mimic_head = make_mimic_model(pak0["gfx/palette.lmp"], args.portrait, (30, 30, 30))
+        files[f"progs/{model_name}"] = make_mimic_model(pak0["gfx/palette.lmp"], dimensions)
+    mimic_head = make_mimic_model(pak0["gfx/palette.lmp"], (16, 16, 16))
     for model_name in head_names:
         files[f"progs/{model_name}"] = mimic_head
     write_pak(args.output, files)
