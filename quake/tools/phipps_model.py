@@ -706,7 +706,10 @@ def make_phipps_player_model(source_model: bytes, palette_bytes: bytes, portrait
     for s, t in reference.texcoords:
         payload.extend(struct.pack("<iii", 0, s, t))
     for triangle in reference.triangles:
-        payload.extend(struct.pack("<iiii", 1, *triangle))
+        # Quake's alias renderer treats clockwise faces as front-facing.  The
+        # procedural primitives use the conventional counter-clockwise order,
+        # so reverse each face when serializing the MDL.
+        payload.extend(struct.pack("<iiii", 1, triangle[0], triangle[2], triangle[1]))
 
     for name, frame in zip(FRAME_NAMES, frames):
         quantized: list[tuple[int, int, int]] = []
