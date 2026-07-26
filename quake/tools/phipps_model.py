@@ -505,12 +505,19 @@ def build_frame(index: int) -> Mesh:
     add_box(mesh, add(joints["chest"], mat_vec(axes, (6.3, 0.0, -1.2))), (1.7, 13.2, 14.5), "denim", axes)
     add_box(mesh, add(joints["chest"], mat_vec(axes, (7.2, 0.0, -1.0))), (0.6, 7.8, 4.6), "denim_dark", axes)
     add_box(mesh, add(joints["chest"], mat_vec(axes, (7.55, -3.0, -0.8))), (0.35, 2.0, 1.8), "patch", axes)
+    # The rear bib is deliberately broad because this is the surface a chase
+    # camera shows most often.  It keeps Phipps readable against dark walls.
+    add_box(mesh, add(joints["chest"], mat_vec(axes, (-6.25, 0.0, -1.7))), (1.65, 14.2, 13.0), "denim", axes)
+    add_box(mesh, add(joints["chest"], mat_vec(axes, (-7.1, 0.0, -2.0))), (0.45, 7.4, 4.2), "denim_dark", axes)
 
     # Suspender straps and brass fasteners stay legible at chase-camera range.
     for side in (-1.0, 1.0):
         lower = add(joints["chest"], mat_vec(axes, (7.0, side * 4.9, 5.0)))
         upper = add(joints["chest"], mat_vec(axes, (2.2, side * 8.1, 8.5)))
         add_prism(mesh, lower, upper, 0.95, 0.95, "denim_dark", sides=4)
+        rear_lower = add(joints["chest"], mat_vec(axes, (-7.0, side * 4.9, 4.1)))
+        rear_upper = add(joints["chest"], mat_vec(axes, (-2.0, side * 8.1, 8.5)))
+        add_prism(mesh, rear_lower, rear_upper, 1.0, 0.95, "denim_dark", sides=4)
         add_ellipsoid(mesh, lower, (0.55, 0.55, 0.55), "patch", axes, sides=6, rings=2)
 
     # Head, neck, ears, nose, eyes, and the unmistakable horseshoe mustache.
@@ -717,4 +724,3 @@ def make_phipps_player_model(source_model: bytes, palette_bytes: bytes, portrait
         for point, normal in zip(quantized, frame.normals):
             payload.extend(struct.pack("<4B", *point, closest_alias_normal(normal)))
     return bytes(payload)
-

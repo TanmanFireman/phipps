@@ -491,8 +491,8 @@ def main() -> None:
         b"crosshair 1\n"
         b"r_drawviewmodel 0\n"
         b"chase_active 1\n"
-        b"chase_back 104\n"
-        b"chase_up 27\n"
+        b"chase_back 124\n"
+        b"chase_up 11\n"
         b"chase_right -18\n"
     )
     quake_rc = (
