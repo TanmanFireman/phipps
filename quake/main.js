@@ -95,7 +95,7 @@ async function ensureDelivery() {
   if (!("serviceWorker" in navigator)) {
     throw new Error("This build needs Service Worker support. Use a current desktop version of Chrome, Edge, Firefox, or Safari.");
   }
-  const registration = await navigator.serviceWorker.register("./sw.js?v=14", { scope: "./" });
+  const registration = await navigator.serviceWorker.register("./sw.js?v=16", { scope: "./" });
   await registration.update().catch(() => {});
   const pendingWorker = registration.installing || registration.waiting;
   if (pendingWorker && pendingWorker.state !== "activated") {
@@ -137,6 +137,7 @@ function createModule() {
       "-winsize", "960", "540",
       "+skill", "1",
       "+fov", "100",
+      "+r_ambient", "32",
       "+r_drawviewmodel", "0",
       "+chase_active", "1",
       "+chase_back", "92",
@@ -179,6 +180,7 @@ function createModule() {
         "fov 100",
         "gamma 0.72",
         "crosshair 1",
+        "r_ambient 32",
         "r_drawviewmodel 0",
         "chase_active 1",
         "chase_back 92",
