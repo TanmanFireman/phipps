@@ -27,6 +27,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "source"
 
 MONSTER_SOUNDS = (
+    "boss1/sight1.wav",
     "demon/ddeath.wav", "demon/dhit2.wav", "demon/djump.wav", "demon/dpain1.wav",
     "demon/idle1.wav", "demon/sight2.wav", "dog/dattack1.wav", "dog/ddeath.wav",
     "dog/dpain1.wav", "dog/dsight.wav", "dog/idle.wav", "enforcer/death1.wav",
