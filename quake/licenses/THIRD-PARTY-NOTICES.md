@@ -10,6 +10,10 @@ Quake is a trademark of id Software. This fan project is not affiliated with or 
 
 The open game-data archive was produced by the contributors to LibreQuake and is redistributed under the 3-clause BSD license in `LibreQuake-BSD-3-Clause.txt`. No commercial Quake PAK is present.
 
+LibreQuake's QuakeC gamecode is GPL version 2. This project compiles that
+gamecode with the small third-person proxy patch documented in `../SOURCE.md`;
+the complete GPL source change is included under `../source/`.
+
 ## libarchive.js
 
 The archive-loading JavaScript begins with the notice:

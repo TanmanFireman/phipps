@@ -26,10 +26,33 @@ https://github.com/lavenderdotpet/LibreQuake
 
 `tools/build_game.py` generates `source/phipps1.map`, compiles it, creates an original animated Phipps player model, and writes the custom `pak6.pak`. The player generator is `tools/phipps_model.py`; it emits a classic Quake v6 alias model with all 143 frame slots expected by LibreQuake's open `player.qc`.
 
+The Qwasm binary suppresses its local view entity, so chase-camera mode also
+uses a non-solid QuakeC proxy that mirrors the player's origin, yaw, frame, and
+effects. The corresponding source is `source/phipps_proxy.qc`; the complete
+upstream-relative change is `source/librequake-phipps-proxy.patch`.
+
+`source/progs.dat` was compiled from LibreQuake commit:
+
+`bd59845a38b4434c6a369fedb5db4c4562e70282`
+
+The QuakeC compiler was FTEQCC git build `f937b9d88` (2026-06-04). To reproduce
+the gamecode:
+
+```sh
+git clone https://github.com/lavenderdotpet/LibreQuake.git
+cd LibreQuake
+git checkout bd59845a38b4434c6a369fedb5db4c4562e70282
+git apply /path/to/phipps/quake/source/librequake-phipps-proxy.patch
+mkdir -p lq1
+fteqcc qcsrc/progs.src -D__LIBREQUAKE__ -O3
+cp lq1/progs.dat /path/to/phipps/quake/source/progs.dat
+```
+
 Requirements:
 
 - Python 3 and Pillow
 - LibreQuake `pak0.pak` and `pak3.pak`
+- the checked-in GPL-licensed `source/progs.dat`
 - ericw-tools `qbsp`, `vis`, `light`, and `bsputil`
 
 The pack in this repository was compiled with ericw-tools commit/tag:

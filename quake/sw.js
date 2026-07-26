@@ -1,4 +1,4 @@
-const CACHE_NAME = "phippsgate-runtime-v12";
+const CACHE_NAME = "phippsgate-runtime-v13";
 
 const VIRTUAL_FILES = {
   "assets/lq.bin": {
@@ -25,7 +25,10 @@ const VIRTUAL_FILES = {
   },
   "game/pak6.pak": {
     type: "application/octet-stream",
-    parts: ["game/pak6.pak.part00?v=17", "game/pak6.pak.part01?v=17", "game/pak6.pak.part02?v=17"],
+    parts: [
+      "game/pak6.pak.part00?v=18", "game/pak6.pak.part01?v=18",
+      "game/pak6.pak.part02?v=18", "game/pak6.pak.part03?v=18",
+    ],
   },
 };
 

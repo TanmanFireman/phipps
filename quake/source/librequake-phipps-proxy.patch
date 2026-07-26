@@ -1,0 +1,79 @@
+diff --git a/qcsrc/client.qc b/qcsrc/client.qc
+index 2d40fa0..967d2bf 100644
+--- a/qcsrc/client.qc
++++ b/qcsrc/client.qc
+@@ -748,6 +748,7 @@ void() PutClientInServer =
+ 	}
+ 	
+ 	W_SetCurrentAmmo ();
++	PhippsEnsureProxy ();
+ };
+ 
+ 
+diff --git a/qcsrc/progs.src b/qcsrc/progs.src
+index e41108f..c34b3ff 100644
+--- a/qcsrc/progs.src
++++ b/qcsrc/progs.src
+@@ -26,6 +26,7 @@ combat.qc
+ items.qc
+ weapons.qc
+ world.qc
++phipps_proxy.qc
+ client.qc
+ 
+ #ifdef __QW__
+diff --git a/qcsrc/phipps_proxy.qc b/qcsrc/phipps_proxy.qc
+new file mode 100644
+index 0000000..535d071
+--- /dev/null
++++ b/qcsrc/phipps_proxy.qc
+@@ -0,0 +1,49 @@
++/*
++ * Third-person rendering proxy for Phipps.
++ *
++ * The Qwasm client build used by the browser suppresses its local view entity
++ * even when the stock chase camera is active.  This non-solid server entity
++ * mirrors the player's pose so the renderer receives the same model as an
++ * ordinary visible entity.
++ */
++
++void() PhippsProxyThink =
++{
++	if (self.owner == world)
++	{
++		remove (self);
++		return;
++	}
++
++	setorigin (self, self.owner.origin);
++	self.angles_x = 0;
++	self.angles_y = self.owner.v_angle_y;
++	self.angles_z = 0;
++	self.frame = self.owner.frame;
++	self.effects = self.owner.effects;
++	self.nextthink = time + 0.01;
++};
++
++void() PhippsEnsureProxy =
++{
++	local entity proxy;
++
++	proxy = find (world, classname, "phipps_proxy");
++	while (proxy)
++	{
++		if (proxy.owner == self)
++			return;
++		proxy = find (proxy, classname, "phipps_proxy");
++	}
++
++	proxy = spawn ();
++	proxy.classname = "phipps_proxy";
++	proxy.owner = self;
++	proxy.movetype = MOVETYPE_NONE;
++	proxy.solid = SOLID_NOT;
++	setmodel (proxy, "progs/player.mdl");
++	setsize (proxy, '0 0 0', '0 0 0');
++	setorigin (proxy, self.origin);
++	proxy.think = PhippsProxyThink;
++	proxy.nextthink = time + 0.01;
++};

@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Build the Phipps Quake add-on pack from open LibreQuake data.
 
-This tool generates a Quake .map, compiles it with ericw-tools, reskins the
-LibreQuake player model, and packages the results as a standard Quake PAK.
+This tool generates a Quake .map, compiles it with ericw-tools, builds the
+original Phipps player model, and packages it with the third-person QuakeC
+proxy as a standard Quake PAK.
 It deliberately does not download or depend on id Software's commercial data.
 """
 
@@ -482,6 +483,9 @@ def main() -> None:
         pak0["gfx/palette.lmp"],
         args.portrait,
     )
+    progs_path = SOURCE / "progs.dat"
+    if not progs_path.exists():
+        parser.error("Compiled source/progs.dat is missing; see SOURCE.md")
     autoexec = (
         b"hostname PHIPPSGATE\n"
         b"name PHIPPS\n"
@@ -508,6 +512,7 @@ def main() -> None:
     files = {
         "maps/phipps1.bsp": (SOURCE / "phipps1.bsp").read_bytes(),
         "maps/phipps1.lit": (SOURCE / "phipps1.lit").read_bytes(),
+        "progs.dat": progs_path.read_bytes(),
         "progs/player.mdl": custom_player,
         "autoexec.cfg": autoexec,
         "quake.rc": quake_rc,
