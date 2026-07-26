@@ -598,9 +598,7 @@ def build_skin(palette_bytes: bytes, portrait_path: Path) -> bytes:
     colors = {
         "skin": (180, 116, 83),
         "skin_dark": (119, 67, 48),
-        # Quake palette index 244 is fullbright blue, so the overalls remain a
-        # readable third-person silhouette in the level's darkest rooms.
-        "denim": (127, 191, 255),
+        "denim": (24, 48, 69),
         "denim_dark": (11, 27, 43),
         "boot": (31, 25, 20),
         "leather": (77, 43, 25),
@@ -633,7 +631,11 @@ def build_skin(palette_bytes: bytes, portrait_path: Path) -> bytes:
 
     # Quantize manually so Quake's reserved shirt/pants translation ramps never
     # recolor Phipps's face or overalls when the player color changes.
-    safe_indices = [index for index in range(256) if not (16 <= index <= 31 or 96 <= index <= 111)]
+    safe_indices = [
+        index
+        for index in range(224)
+        if not (16 <= index <= 31 or 96 <= index <= 111)
+    ]
     cache: dict[tuple[int, int, int], int] = {}
     indexed = bytearray()
     for pixel in atlas.getdata():
