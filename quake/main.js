@@ -173,6 +173,23 @@ function createModule() {
         window.FS.write(file, bytes, 0, bytes.length, 0);
         window.FS.close(file);
       });
+      const runtimeConfig = new TextEncoder().encode([
+        "name PHIPPS",
+        "sensitivity 5",
+        "fov 100",
+        "gamma 0.72",
+        "crosshair 1",
+        "r_drawviewmodel 0",
+        "chase_active 1",
+        "chase_back 92",
+        "chase_up 11",
+        "chase_right -18",
+        "",
+      ].join("\n"));
+      appendConsole("Writing deterministic third-person config");
+      const configFile = window.FS.open("/id1/config.cfg", "w");
+      window.FS.write(configFile, runtimeConfig, 0, runtimeConfig.length, 0);
+      window.FS.close(configFile);
       this.hideConsole();
       report("Phippsgate is open", 1, 1);
     },
