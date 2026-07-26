@@ -19,6 +19,8 @@ from typing import Iterable
 
 from PIL import Image, ImageDraw, ImageEnhance, ImageOps
 
+from phipps_model import make_phipps_player_model
+
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "source"
@@ -442,8 +444,8 @@ def run_checked(command: list[str], cwd: Path, env: dict[str, str]) -> None:
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--pak0", type=Path, required=True, help="LibreQuake pak0.pak")
-    parser.add_argument("--pak3", type=Path, required=True, help="LibreQuake pak3.pak")
-    parser.add_argument("--tools", type=Path, required=True, help="Directory containing qbsp/vis/light/bsputil")
+    parser.add_argument("--pak3", type=Path, help="LibreQuake pak3.pak (required when compiling the map)")
+    parser.add_argument("--tools", type=Path, help="Directory containing qbsp/vis/light/bsputil")
     parser.add_argument("--portrait", type=Path, default=ROOT.parent / "assets" / "phipps.png")
     parser.add_argument("--output", type=Path, default=ROOT / "pak6.pak")
     args = parser.parse_args()
@@ -453,27 +455,46 @@ def main() -> None:
     SOURCE.mkdir(parents=True, exist_ok=True)
 
     pak0 = read_pak(args.pak0)
-    pak3 = read_pak(args.pak3)
-    (work / "efdm1.bsp").write_bytes(pak3["maps/efdm1.bsp"])
-
-    env = dict(os.environ)
-    env["LD_LIBRARY_PATH"] = str(args.tools) + os.pathsep + env.get("LD_LIBRARY_PATH", "")
-    run_checked([str(args.tools / "bsputil"), "--extract-textures", "efdm1.bsp"], work, env)
-
     map_path = SOURCE / "phipps1.map"
     build_map(map_path)
-    (work / "efdm1.wad").replace(SOURCE / "efdm1.wad")
-    try:
-        run_checked([str(args.tools / "qbsp"), "-wadpath", str(SOURCE), str(map_path)], SOURCE, env)
-        run_checked([str(args.tools / "vis"), "-level", "4", str(SOURCE / "phipps1.bsp")], SOURCE, env)
-        run_checked([str(args.tools / "light"), "-extra4", "-gate", "0.08", str(SOURCE / "phipps1.bsp")], SOURCE, env)
-    finally:
-        # The extracted WAD is reproducible LibreQuake input and not part of our source.
-        if (SOURCE / "efdm1.wad").exists():
-            (SOURCE / "efdm1.wad").replace(work / "efdm1.wad")
+    if args.tools:
+        if not args.pak3:
+            parser.error("--pak3 is required when --tools is supplied")
+        pak3 = read_pak(args.pak3)
+        (work / "efdm1.bsp").write_bytes(pak3["maps/efdm1.bsp"])
+        env = dict(os.environ)
+        env["LD_LIBRARY_PATH"] = str(args.tools) + os.pathsep + env.get("LD_LIBRARY_PATH", "")
+        run_checked([str(args.tools / "bsputil"), "--extract-textures", "efdm1.bsp"], work, env)
+        (work / "efdm1.wad").replace(SOURCE / "efdm1.wad")
+        try:
+            run_checked([str(args.tools / "qbsp"), "-wadpath", str(SOURCE), str(map_path)], SOURCE, env)
+            run_checked([str(args.tools / "vis"), "-level", "4", str(SOURCE / "phipps1.bsp")], SOURCE, env)
+            run_checked([str(args.tools / "light"), "-extra4", "-gate", "0.08", str(SOURCE / "phipps1.bsp")], SOURCE, env)
+        finally:
+            # The extracted WAD is reproducible LibreQuake input and not part of our source.
+            if (SOURCE / "efdm1.wad").exists():
+                (SOURCE / "efdm1.wad").replace(work / "efdm1.wad")
+    elif not (SOURCE / "phipps1.bsp").exists() or not (SOURCE / "phipps1.lit").exists():
+        parser.error("Compiled phipps1.bsp/.lit are missing; provide --pak3 and --tools")
 
-    custom_player = reskin_player(pak0["progs/player.mdl"], pak0["gfx/palette.lmp"], args.portrait)
-    autoexec = b"hostname PHIPPSGATE\nname PHIPPS\nsensitivity 5\nfov 100\ngamma 0.72\ncrosshair 1\n"
+    custom_player = make_phipps_player_model(
+        pak0["progs/player.mdl"],
+        pak0["gfx/palette.lmp"],
+        args.portrait,
+    )
+    autoexec = (
+        b"hostname PHIPPSGATE\n"
+        b"name PHIPPS\n"
+        b"sensitivity 5\n"
+        b"fov 100\n"
+        b"gamma 0.72\n"
+        b"crosshair 1\n"
+        b"r_drawviewmodel 0\n"
+        b"chase_active 1\n"
+        b"chase_back 104\n"
+        b"chase_up 27\n"
+        b"chase_right -18\n"
+    )
     quake_rc = (
         b"exec default.cfg\n"
         b"exec config.cfg\n"

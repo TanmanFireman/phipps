@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#090b0a">
   <meta name="description" content="Phipps: The Phippsgate Complex — a custom browser game built on the GPL Quake engine.">
   <title>Phipps: The Phippsgate Complex</title>
-  <link rel="stylesheet" href="style.css?v=2">
+  <link rel="stylesheet" href="style.css?v=3">
 </head>
 <body>
   <main id="app">
@@ -16,7 +16,7 @@
       <div class="title-art" aria-hidden="true"></div>
       <div class="vignette" aria-hidden="true"></div>
 
-      <div class="classification">AN ACTUAL GPL QUAKE ENGINE BUILD</div>
+      <div class="classification">THIRD-PERSON // GPL QUAKE ENGINE // PRE-ALPHA</div>
       <div class="title-lockup">
         <p class="eyebrow">FARMER. COWMAN. LAST MAN THROUGH THE HAYGATE.</p>
         <h1 id="gameTitle"><span>PHIPPS</span><small>THE PHIPPSGATE COMPLEX</small></h1>
@@ -36,7 +36,7 @@
       <aside class="intel">
         <span>FIELD ORDER 01</span>
         <strong>RECLAIM THE HAYGATE</strong>
-        <p>Real BSP geometry. Real Quake AI. One heavily reskinned farmer.</p>
+        <p>Real BSP geometry. Real Quake AI. One fully animated low-poly farmer.</p>
       </aside>
     </section>
 
@@ -49,7 +49,7 @@
 
     <section id="gameShell" class="game-shell" hidden>
       <div class="game-frame">
-        <canvas id="canvas" width="1280" height="720" tabindex="0" aria-label="Phippsgate first-person game view"></canvas>
+        <canvas id="canvas" width="1280" height="720" tabindex="0" aria-label="Phippsgate third-person game view"></canvas>
         <textarea id="output" readonly spellcheck="false" aria-label="Quake console output"></textarea>
         <div class="scanlines" aria-hidden="true"></div>
 
@@ -61,7 +61,7 @@
         <div class="engine-stamp">QWASM // LQ // PHIPPS-01</div>
         <button id="gameMusicButton" class="game-music" type="button">♫</button>
       </div>
-      <p id="captureHint" class="capture-hint">CLICK THE GAME TO CAPTURE THE MOUSE · ESC TO RELEASE</p>
+      <p id="captureHint" class="capture-hint">WASD MOVE · MOUSE AIM · CLICK FIRE · CLICK VIEW TO CAPTURE · ESC RELEASE</p>
     </section>
 
     <section id="errorScreen" class="error-screen" hidden>
@@ -74,6 +74,6 @@
 
   <audio id="music" preload="auto"></audio>
   <a id="exportFile" hidden></a>
-  <script type="module" src="main.js?v=10"></script>
+  <script type="module" src="main.js?v=11"></script>
 </body>
 </html>

@@ -24,7 +24,7 @@ https://github.com/lavenderdotpet/LibreQuake
 
 ## Phipps level and pack
 
-`tools/build_game.py` generates `source/phipps1.map`, compiles it, reskins LibreQuake's player model, and writes the custom `pak6.pak`.
+`tools/build_game.py` generates `source/phipps1.map`, compiles it, creates an original animated Phipps player model, and writes the custom `pak6.pak`. The player generator is `tools/phipps_model.py`; it emits a classic Quake v6 alias model with all 143 frame slots expected by LibreQuake's open `player.qc`.
 
 Requirements:
 
@@ -43,6 +43,13 @@ python quake/tools/build_game.py \
   --pak0 /path/to/pak0.pak \
   --pak3 /path/to/pak3.pak \
   --tools /path/to/ericw-tools/bin
+```
+
+When the checked-in BSP and LIT are unchanged, the pack and player model can be
+rebuilt without the map compiler:
+
+```sh
+python quake/tools/build_game.py --pak0 /path/to/pak0.pak
 ```
 
 After rebuilding, split binary files into 600,000-byte numbered parts matching the paths declared in `sw.js`.
